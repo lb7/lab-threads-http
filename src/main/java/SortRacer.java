@@ -13,23 +13,11 @@ public class SortRacer {
 
 	public static void main(String[] args) 
 	{
-		SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SSSS"); //for output
-		Integer[] nums;
+        Thread mergeThread = new Thread(new SortRacer.MergeSort());
+        Thread quickThread = new Thread(new SortRacer.QuickSort());
 
-		
-		/** Merge Sort **/
-		nums = shuffled((int)Math.pow(10,7), 448); //a list of shuffled 10 million numbers
-
-		System.out.println("Starting merge sort at "+dateFormat.format(new Date()));
-		Sorting.mergeSort(nums);
-		System.out.println("Merge sort finished at "+dateFormat.format(new Date())+" !");
-
-		
-		/** Quick Sort **/
-		nums = shuffled((int)Math.pow(10,7), 448); //a list of shuffled 10 million numbers
-		System.out.println("Starting quicksort at "+dateFormat.format(new Date()));
-		Sorting.quickSort(nums);
-		System.out.println("Quicksort finished at "+dateFormat.format(new Date())+" !");
+        mergeThread.start();
+        quickThread.start();
 	}
 	
 	
@@ -51,5 +39,32 @@ public class SortRacer {
 			Collections.shuffle(nums);
 		return nums.toArray(new Integer[0]);		
 	}
-	
+
+	static class MergeSort implements Runnable {
+
+        @Override
+        public void run() {
+            /* Merge Sort */
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SSSS"); //for output
+            Integer[] nums = shuffled((int)Math.pow(10,7), 448); //a list of shuffled 10 million numbers
+
+            System.out.println("Starting merge sort at "+dateFormat.format(new Date()));
+            Sorting.mergeSort(nums);
+            System.out.println("Merge sort finished at "+dateFormat.format(new Date())+" !");
+        }
+    }
+
+    static class QuickSort implements Runnable {
+
+	    @Override
+        public void run() {
+            /* Quick Sort */
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SSSS"); //for output
+            Integer[] nums = shuffled((int)Math.pow(10,7), 448); //a list of shuffled 10 million numbers
+            System.out.println("Starting quicksort at "+dateFormat.format(new Date()));
+            Sorting.quickSort(nums);
+            System.out.println("Quicksort finished at "+dateFormat.format(new Date())+" !");
+        }
+    }
+
 }

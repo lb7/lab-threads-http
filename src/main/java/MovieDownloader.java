@@ -34,44 +34,50 @@ public class MovieDownloader {
 		String[] movies = null;
 
 		try {
-
+			//Make a new URL with the API rul
 			URL url = new URL(urlString);
 
+			//Open a connection and connect with the GET HTTP method
 			urlConnection = (HttpURLConnection) url.openConnection();
 			urlConnection.setRequestMethod("GET");
 			urlConnection.connect();
 
+			//Get the stream from the connection so we can read the input
 			InputStream inputStream = urlConnection.getInputStream();
-			StringBuffer buffer = new StringBuffer();
-			if (inputStream == null) {
+			StringBuffer buffer = new StringBuffer(); //Create buffer to read lines into
+			if (inputStream == null) { //Stop if there is no input stream
 				return null;
 			}
+			//Set up reader so we can read from the connection
 			reader = new BufferedReader(new InputStreamReader(inputStream));
 
-			String line = reader.readLine();
-			while (line != null) {
-				buffer.append(line + "\n");
-				line = reader.readLine();
+			String line = reader.readLine(); //Read a line received from the API
+            while (line != null) { //Keep reading until there are no more lines
+				buffer.append(line + "\n"); //Stick the line to the end of the buffer
+				line = reader.readLine(); //Read the next line
 			}
 
-			if (buffer.length() == 0) {
+			if (buffer.length() == 0) { //Stop if there is nothing in the buffer
 				return null;
 			}
-			String results = buffer.toString();
+			String results = buffer.toString(); //Get the full string from the buffer
+
+            //Edit the result so it's more readable
 			results = results.replace("{\"Search\":[","");
 			results = results.replace("]}","");
 			results = results.replace("},", "},\n");
 
+			//Split the result into one string for each line
 			movies = results.split("\n");
 		} 
-		catch (IOException e) {
+		catch (IOException e) { //Stop if there is an IOException
 			return null;
 		} 
 		finally {
-			if (urlConnection != null) {
+			if (urlConnection != null) { //Disconnect the connection if it exists
 				urlConnection.disconnect();
 			}
-			if (reader != null) {
+			if (reader != null) { //Close the reader if it exists
 				try {
 					reader.close();
 				} 
